@@ -31,7 +31,7 @@ html,body{
 
 .page1{
     width: 100vw;
-    min-height: 130vh;
+    min-height: 70vh;
    background-color: #1B1914;
    position: relative;
 }

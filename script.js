@@ -35,30 +35,33 @@ function scroll() {
   // ✅ Select all stripes
   const stripes = gsap.utils.toArray(".page2 section");
 
-  // ✅ Animate each stripe
-  stripes.forEach((stripe, i) => {
-    // Give all sections a starting red color
-    stripe.style.backgroundColor = "red";
+  // ✅ Different scroll speeds (like a “music bar”)
+  const speeds = [2.5, 2, 1.5, 1, 2.2, 1.8];
 
+  stripes.forEach((stripe, i) => {
+    // Start each stripe as red with a gradient fill (yellow from bottom)
+    stripe.style.background = "linear-gradient(to top, yellow 0%, red 0%)";
+    stripe.style.backgroundSize = "100% 0%"; // start empty (no fill)
+    stripe.style.backgroundRepeat = "no-repeat";
+    stripe.style.backgroundPosition = "bottom";
+
+    // ✅ Animate both slide-up + gradient fill
     gsap.fromTo(
       stripe,
       {
-        y: 300 + i * 30,   // start lower
-        opacity: 1,
-        backgroundColor: "red",
+        y: 400 + i * 40, // starts lower
+        backgroundSize: "100% 0%", // no yellow yet
       },
       {
         y: 0,
-        opacity: 1,
-        backgroundColor: "red", // animate to yellow
+        backgroundSize: "100% 100%", // fully yellow at the top
         ease: "power3.out",
-        duration: 2,
         scrollTrigger: {
-          trigger: stripe,
-          scroller: ".main",   // 👈 important for Locomotive
+          trigger: ".page2",
+          scroller: ".main",
           start: "top 90%",
-          end: "bottom 40%",
-          scrub: 1.5,          // keeps color & motion linked to scroll
+          end: "bottom 10%",
+          scrub: speeds[i], // different scroll speed
         },
       }
     );
