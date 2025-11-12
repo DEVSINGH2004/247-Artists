@@ -41,7 +41,7 @@ html,body{
     font-size: 8.8vw;
     color: white;
     position: absolute;
-    top: 35%;
+    top: 55%;
     left: 1%;
 }
 .page1>h1:nth-child(2){
@@ -49,16 +49,16 @@ html,body{
     font-size: 8.8vw;
     color: white;
     position: absolute;
-    top: 53%;
+    top: 80%;
     left: 1%;
 }
 
-/* .blank{
+.blank{
     height: 50vh;
     width: 100vw;
     background-color: #1B1914;
     border: none;
-} */
+}
 
 .page2{
 width: 100vw;
@@ -71,15 +71,11 @@ height: 100vh;
 
 .page2 section {
     
-    flex: 1; /* divides width equally among all sections */
-    height: 100%; /* take full height of page2 */
-    /* border-left: 1px solid black; light left border */
-    /* border-right: 1px solid black; light right border */
+    flex: 1; 
+    height: 100%;
+  
     
 }
-
-
-
 
 
 .page3{
