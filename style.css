@@ -80,8 +80,60 @@ height: 100vh;
 
 .page3{
     width: 100vw;
-    min-height: 70vh;
+    min-height: 160vh;
    background-color: red;
+   font-family: gel-medium;
+   color:#1B1914 ;
    position: relative;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
 }
+
+ .page3>h1{
+    font-size: 11.7vw;  
+    margin-top: 4vw;
+}
+
+.page3 .word:nth-child(1) {
+  margin-right: -2.5vw; /* add more space after "The" */
+}
+
+.page3 .word:nth-child(2) {
+  margin-right: -2.5vw; /* more space after "Music" */
+}
+
+.page3 h2{
+    font-size: 12vw;
+    text-align: center;   
+    margin-top: -2vw;
+    margin-bottom: 4vw;
+}
+
+.page3 .word2:nth-child(1) {
+  margin-right: -2.5vw; /* add more space after "can" */
+}
+
+.page3 .word2:nth-child(2) {
+  margin-right: -2.5vw; /* more space after "be" */
+}
+
+.page4{
+    width: 100vw;
+    min-height: 100vh;
+   background-color: red;
+   font-family: gel-medium;
+   color: white;
+   position: relative;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+}
+
+
+
+
+
 
