@@ -5,12 +5,13 @@ function scroll() {
   const locoScroll = new LocomotiveScroll({
     el: document.querySelector(".main"),
     smooth: true,
-    lerp: 0.08,      // snappy
-    multiplier: 2.2, // fast overall scroll
+    lerp: 0.08,
+    multiplier: 2.2,
   });
 
   // ✅ Sync ScrollTrigger with Locomotive
   locoScroll.on("scroll", ScrollTrigger.update);
+
   ScrollTrigger.scrollerProxy(".main", {
     scrollTop(value) {
       return arguments.length
@@ -29,13 +30,10 @@ function scroll() {
       ? "transform"
       : "fixed",
   });
-  ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
-  ScrollTrigger.refresh();
 
-  // ✅ Select all stripes
+  // ✅ PAGE 2 (unchanged)
   const stripes = gsap.utils.toArray(".page2 section");
 
-  // ✅ Set initial look
   stripes.forEach((stripe) => {
     stripe.style.background = "linear-gradient(to top, yellow 0%, red 0%)";
     stripe.style.backgroundSize = "100% 0%";
@@ -43,7 +41,6 @@ function scroll() {
     stripe.style.backgroundPosition = "bottom";
   });
 
-  // ✅ PART 1 — Stripe 3 plays first (index 2)
   const stripe3 = stripes[2];
   const lead = gsap.timeline({
     scrollTrigger: {
@@ -66,9 +63,8 @@ function scroll() {
     }
   );
 
-  // ✅ PART 2 — After stripe 3 finishes, all others animate together
   const others = stripes.filter((_, i) => i !== 2);
-  const speeds = [0.8, 2.5, 3.8, 1.5, 5]; // adjust per stripe (fast → slow)
+  const speeds = [0.8, 2.5, 3.8, 1.5, 5];
 
   others.forEach((stripe, i) => {
     gsap.fromTo(
@@ -81,13 +77,86 @@ function scroll() {
         scrollTrigger: {
           trigger: ".page2",
           scroller: ".main",
-          start: "top 40%", // begins once lead stripe nearly done
+          start: "top 40%",
           end: "bottom 10%",
-          scrub: speeds[i], // each with its own scroll speed
+          scrub: speeds[i],
         },
       }
     );
   });
+
+
+
+
+
+  // ✅ PAGE 3 — Font-size shrink + Scroll Freeze
+  const words = document.querySelectorAll(".page3 span");
+
+  // Set initial (large) font size for the animation start
+  words.forEach((word) => {
+    word.style.fontSize = "11.7vw"; // starting big font
+  });
+
+  // Create GSAP timeline that will control all font-size animations
+  const tlPage3 = gsap.timeline({
+    scrollTrigger: {
+      trigger: ".page3",
+      scroller: ".main",
+      start: "top top",
+      end: "+=2500", // how long scroll stays pinned
+      pin: true,
+      scrub: false, // disable scroll-based scrubbing
+      onEnter: () => locoScroll.stop(), // freeze scroll while animating
+      onLeave: () => locoScroll.start(), // resume scroll after animation
+      onEnterBack: () => locoScroll.stop(),
+      onLeaveBack: () => locoScroll.start(),
+      // markers: true,
+    },
+  });
+
+  // Animate each word to shrink down sequentially
+  words.forEach((word, i) => {
+    tlPage3.to(
+      word,
+      {
+        fontSize: "7vw", // final smaller size
+        duration: 0.6,
+        ease: "power3.out",
+      },
+      i * 0.4 // delay each word slightly for a wave-like sequence
+    );
+  });
+
+  // ✅ Resume scroll after animation completes
+  tlPage3.call(() => locoScroll.start());
+
+  const page4Text = document.querySelector(".page4 h1 span:nth-child(2)");
+
+gsap.fromTo(
+  page4Text,
+  {
+    y: 200, // start from below
+    opacity: 0, // invisible initially
+  },
+  {
+    y: 0,
+    opacity: 1,
+    ease: "power3.out",
+    duration: 2.2,
+    scrollTrigger: {
+      trigger: ".page4",
+      scroller: ".main",
+      start: "top 80%",     // when Page 4 enters viewport
+      end: "top 40%",       // completes before middle
+      scrub: 2,             // makes it scroll-synced & smooth
+      // markers: true,      // enable for debugging
+    },
+  }
+);
+
+  // ✅ Refresh ScrollTrigger after setup
+  ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
+  ScrollTrigger.refresh();
 }
 
 scroll();
