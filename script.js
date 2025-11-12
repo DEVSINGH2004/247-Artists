@@ -30,7 +30,9 @@ function scroll() {
       : "fixed",
   });
 
-  // ✅ PAGE 1 — Smooth Slide-Out Animation
+  
+  
+
  
 
   // ✅ PAGE 2 — Stripe Color Animation
@@ -66,7 +68,6 @@ function scroll() {
 
   const others = stripes.filter((_, i) => i !== 2);
   const speeds = [0.8, 2.5, 3.8, 1.5, 5];
-
   others.forEach((stripe, i) => {
     gsap.fromTo(
       stripe,
@@ -86,31 +87,27 @@ function scroll() {
     );
   });
 
-  // ✅ PAGE 3 — Shrink, Slide & Reveal Side Text
+  // ✅ PAGE 3 — New scroll-synced approach
   const words = document.querySelectorAll(".page3 span");
-  words.forEach((word) => {
-    word.style.fontSize = "11.7vw";
-  });
+  const page3 = document.querySelector(".page3");
 
-  // Create side text dynamically
-  const sideTextContainer = document.createElement("div");
-  sideTextContainer.classList.add("side-text-container");
-  sideTextContainer.innerHTML = `
-    <p class="side-line">making money with music is hard</p>
-    <p class="side-line">and comes with complex tasks</p>
+  // dynamically insert side text
+  const sideText = document.createElement("div");
+  sideText.className = "side-lines";
+  sideText.innerHTML = `
+    <p>making money with music is hard</p>
+    <p>and comes with complex tasks</p>
   `;
-  document.querySelector(".page3").appendChild(sideTextContainer);
+  page3.appendChild(sideText);
 
-  // Position & style side text (move this to CSS if needed)
-  gsap.set(".side-text-container", {
+  gsap.set(".side-lines", {
     position: "absolute",
     top: "68%",
     left: "62%",
-    transform: "translateY(-50%)",
-    color: "#1B1914",
     fontSize: "2vw",
+    color: "#1B1914",
     fontFamily: "gel-medium",
-    opacity: 0,
+    opacity: 1,
   });
 
   const tlPage3 = gsap.timeline({
@@ -118,47 +115,42 @@ function scroll() {
       trigger: ".page3",
       scroller: ".main",
       start: "top top",
-      end: "+=3500",
+      end: "+=2500",
       pin: true,
-      scrub: false,
-      onEnter: () => locoScroll.stop(),
-      onLeave: () => locoScroll.start(),
-      onEnterBack: () => locoScroll.stop(),
-      onLeaveBack: () => locoScroll.start(),
+      anticipatePin: 1,
+      scrub: 2, // ✨ smooth, scroll-synced
     },
   });
 
-  // Shrink each word
-  words.forEach((word, i) => {
-    tlPage3.to(
-      word,
-      {
-        fontSize: "7vw",
-        duration: 0.6,
-        ease: "power3.out",
-      },
-      i * 0.4
-    );
+  // Step 1: Shrink the words
+  tlPage3.to(words, {
+    fontSize: "7vw",
+    ease: "power3.out",
+    stagger: 0.25,
   });
 
-  // Slide "can be hard" left
+  // Step 2: Slide "can be hard" left
   tlPage3.to(".page3 h2", {
     xPercent: -25,
-    duration: 1.2,
     ease: "power3.inOut",
-  }, "+=0.3");
+  });
 
-  // Reveal side text beside it
-  tlPage3.to(".side-text-container", {
-    x: 0,
-    opacity: 1,
-    ease: "power3.out",
-    duration: 1.2,
-  }, "-=0.4");
+  // Step 3: Reveal side text diagonally (for cinematic feel)
+  tlPage3.fromTo(
+    ".side-lines p",
+    { x: 100, y: 50, opacity: 0 },
+    {
+      x: 0,
+      y: 0,
+      opacity: 1,
+      ease: "power3.out",
+      stagger: 0.4,
+      duration: 1.2,
+    },
+    "-=0.3"
+  );
 
-  tlPage3.call(() => locoScroll.start());
-
-  // ✅ PAGE 4 — “have to be…” Slide Up Animation
+  // ✅ PAGE 4 — Delayed “have to be…” Slide-Up Animation
   const page4Text = document.querySelector(".page4 h1 span:nth-child(2)");
   gsap.fromTo(
     page4Text,
@@ -168,18 +160,18 @@ function scroll() {
       opacity: 1,
       ease: "power3.out",
       duration: 2.2,
-      delay:0.8,
+      delay: 0.8,
       scrollTrigger: {
         trigger: ".page4",
         scroller: ".main",
-        start: "top 80%",
-        end: "top 40%",
+        start: "top 50%",
+        end: "top 10%",
         scrub: 2,
       },
     }
   );
 
-  // ✅ Refresh ScrollTrigger after setup
+  // ✅ Keep ScrollTrigger and Locomotive in sync
   ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
   ScrollTrigger.refresh();
 }
