@@ -11,7 +11,6 @@ function scroll() {
 
   // ✅ Sync ScrollTrigger with Locomotive
   locoScroll.on("scroll", ScrollTrigger.update);
-
   ScrollTrigger.scrollerProxy(".main", {
     scrollTop(value) {
       return arguments.length
@@ -31,9 +30,11 @@ function scroll() {
       : "fixed",
   });
 
-  // ✅ PAGE 2 (unchanged)
-  const stripes = gsap.utils.toArray(".page2 section");
+  // ✅ PAGE 1 — Smooth Slide-Out Animation
+ 
 
+  // ✅ PAGE 2 — Stripe Color Animation
+  const stripes = gsap.utils.toArray(".page2 section");
   stripes.forEach((stripe) => {
     stripe.style.background = "linear-gradient(to top, yellow 0%, red 0%)";
     stripe.style.backgroundSize = "100% 0%";
@@ -85,74 +86,98 @@ function scroll() {
     );
   });
 
-
-
-
-
-  // ✅ PAGE 3 — Font-size shrink + Scroll Freeze
+  // ✅ PAGE 3 — Shrink, Slide & Reveal Side Text
   const words = document.querySelectorAll(".page3 span");
-
-  // Set initial (large) font size for the animation start
   words.forEach((word) => {
-    word.style.fontSize = "11.7vw"; // starting big font
+    word.style.fontSize = "11.7vw";
   });
 
-  // Create GSAP timeline that will control all font-size animations
+  // Create side text dynamically
+  const sideTextContainer = document.createElement("div");
+  sideTextContainer.classList.add("side-text-container");
+  sideTextContainer.innerHTML = `
+    <p class="side-line">making money with music is hard</p>
+    <p class="side-line">and comes with complex tasks</p>
+  `;
+  document.querySelector(".page3").appendChild(sideTextContainer);
+
+  // Position & style side text (move this to CSS if needed)
+  gsap.set(".side-text-container", {
+    position: "absolute",
+    top: "68%",
+    left: "62%",
+    transform: "translateY(-50%)",
+    color: "#1B1914",
+    fontSize: "2vw",
+    fontFamily: "gel-medium",
+    opacity: 0,
+  });
+
   const tlPage3 = gsap.timeline({
     scrollTrigger: {
       trigger: ".page3",
       scroller: ".main",
       start: "top top",
-      end: "+=2500", // how long scroll stays pinned
+      end: "+=3500",
       pin: true,
-      scrub: false, // disable scroll-based scrubbing
-      onEnter: () => locoScroll.stop(), // freeze scroll while animating
-      onLeave: () => locoScroll.start(), // resume scroll after animation
+      scrub: false,
+      onEnter: () => locoScroll.stop(),
+      onLeave: () => locoScroll.start(),
       onEnterBack: () => locoScroll.stop(),
       onLeaveBack: () => locoScroll.start(),
-      // markers: true,
     },
   });
 
-  // Animate each word to shrink down sequentially
+  // Shrink each word
   words.forEach((word, i) => {
     tlPage3.to(
       word,
       {
-        fontSize: "7vw", // final smaller size
+        fontSize: "7vw",
         duration: 0.6,
         ease: "power3.out",
       },
-      i * 0.4 // delay each word slightly for a wave-like sequence
+      i * 0.4
     );
   });
 
-  // ✅ Resume scroll after animation completes
-  tlPage3.call(() => locoScroll.start());
+  // Slide "can be hard" left
+  tlPage3.to(".page3 h2", {
+    xPercent: -25,
+    duration: 1.2,
+    ease: "power3.inOut",
+  }, "+=0.3");
 
-  const page4Text = document.querySelector(".page4 h1 span:nth-child(2)");
-
-gsap.fromTo(
-  page4Text,
-  {
-    y: 200, // start from below
-    opacity: 0, // invisible initially
-  },
-  {
-    y: 0,
+  // Reveal side text beside it
+  tlPage3.to(".side-text-container", {
+    x: 0,
     opacity: 1,
     ease: "power3.out",
-    duration: 2.2,
-    scrollTrigger: {
-      trigger: ".page4",
-      scroller: ".main",
-      start: "top 80%",     // when Page 4 enters viewport
-      end: "top 40%",       // completes before middle
-      scrub: 2,             // makes it scroll-synced & smooth
-      // markers: true,      // enable for debugging
-    },
-  }
-);
+    duration: 1.2,
+  }, "-=0.4");
+
+  tlPage3.call(() => locoScroll.start());
+
+  // ✅ PAGE 4 — “have to be…” Slide Up Animation
+  const page4Text = document.querySelector(".page4 h1 span:nth-child(2)");
+  gsap.fromTo(
+    page4Text,
+    { y: 200, opacity: 0 },
+    {
+      y: 0,
+      opacity: 1,
+      ease: "power3.out",
+      duration: 2.2,
+      delay:0.8,
+      scrollTrigger: {
+        trigger: ".page4",
+        scroller: ".main",
+        start: "top 80%",
+        end: "top 40%",
+        scrub: 2,
+      },
+    }
+  );
 
   // ✅ Refresh ScrollTrigger after setup
   ScrollTrigger.addEventListener("refresh", () => locoScroll.update());

@@ -150,6 +150,21 @@ height: 100vh;
     
 }
 
+.side-text-container {
+  position: absolute;
+  top: 57%;
+  left: 60%;
+  transform: translateY(-50%);
+  color: #1B1914;
+  font-size: 2vw;
+  font-family: gel-medium;
+  opacity: 0;
+}
+
+.side-line {
+  margin: 0.5vw 0;
+}
+
 
 
 
